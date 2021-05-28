@@ -27,7 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.358" />
+        app:layout_constraintVertical_bias="0.252" />
 
     <TextView
         android:id="@+id/textV2"
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/textV2"
-        android:hint="Type in what you what to be spoken"/>
+        android:hint="Type in what you want to be spoken"/>
 
     <Button
         android:id="@+id/btnTTS"
@@ -55,6 +55,26 @@
         app:layout_constraintTop_toBottomOf="@+id/editT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/readDemoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:text="This application is a demonstration of voice capabilities in an app. It can help you read and make things easier."
+        app:layout_constraintTop_toBottomOf="@id/btnTTS"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ImageButton
+        android:id="@+id/speakBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/readDemoText"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_volume_up_24"
+        android:background="@color/white"/>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

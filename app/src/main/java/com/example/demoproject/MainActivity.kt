@@ -4,23 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import java.util.*
         // for the command line
         // adb emu avd hostmicon
-class MainActivity : AppCompatActivity(), View.OnClickListener, TextToSpeech.OnInitListener {
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     lateinit var button : Button
     lateinit var textView : TextView
-    private val REQUEST_CODE_SPEECH_INPUT = 100
+    private val REQUEST_CODE_SPEECH_INPUT = 0
 
     private var tts: TextToSpeech? = null //variable for text to speech
             //nullable being initialized in onCreate
@@ -30,16 +28,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextToSpeech.OnI
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         button = findViewById(R.id.voice_btn)
-        button.setOnClickListener(this)
+//        button.setOnClickListener(this)
         textView = findViewById(R.id.textV)
+        button.setOnClickListener{
+            speak()
+        }
 
         //for the TTS
         tts = TextToSpeech(this,this) //initializing TTS
-        // main activity is both listener and context (everything is going on here)
+        // main activity is both listener and context
         var button2 : Button
         button2 = findViewById(R.id.btnTTS)
         var etEnteredText : EditText
         etEnteredText = findViewById(R.id.editT)
+
 
         button2.setOnClickListener{
             if (etEnteredText.text.isEmpty()) {
@@ -48,40 +50,34 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextToSpeech.OnI
                 readOut(etEnteredText.text.toString())
             }
         }
-
-
-    }
-
-    override fun onClick (view: View?){
-        when(view?.id){
-            R.id.voice_btn->{
-                speak()
-            }
+        //read text aloud extra
+        var demoText : TextView
+        demoText = findViewById(R.id.readDemoText)
+        var speakerButton : ImageButton
+        speakerButton = findViewById(R.id.speakBtn)
+        speakerButton.setOnClickListener{
+            readOut(demoText.text.toString())
         }
+
+
+
     }
+
 
     private fun speak() {
         // intent that will show the dialog
         val mIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault())
+       // mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault()) //you can set your own language if not the default ex. en-US
         mIntent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Say something")
 
+        startActivityForResult(mIntent,REQUEST_CODE_SPEECH_INPUT)
 
 
-        try {
-           // if no error show the dialog
-           //registerForActivityResult(ActivityResultContracts.GetContent(spe))
-
-            startActivityForResult(mIntent,REQUEST_CODE_SPEECH_INPUT)
-        }
-        catch (e: Exception){
-            // if error: get error message and show in a toast
-            Toast.makeText(this,e.message,Toast.LENGTH_SHORT).show()
 
 
-        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -98,7 +94,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextToSpeech.OnI
             }
         }
     }
+
 // text to speech
+            //on init is a fun in interface onInitListener --> parameters success or error
     override fun onInit(status: Int) {
             //if textToSpeech can be used: (status ok)
          if (status == TextToSpeech.SUCCESS){
@@ -116,5 +114,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextToSpeech.OnI
         tts!!.speak(text,TextToSpeech.QUEUE_FLUSH,null, 1.toString())
 
     }
+
 }
 
